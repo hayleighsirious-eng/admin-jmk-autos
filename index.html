@@ -676,11 +676,7 @@ select.form-input{appearance:none;cursor:pointer;
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 8 12 12 14 14"/></svg>
         <span>Reserved</span>
       </div>
-      <div class="sb-section">System</div>
-      <div class="sb-item" onclick="showView('settings')" id="nav-settings">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-        <span>Settings</span>
-      </div>
+      
     </nav>
     <div class="sb-bottom">
       <div class="sb-user">
@@ -815,79 +811,7 @@ select.form-input{appearance:none;cursor:pointer;
         </div>
       </div>
 
-      <!-- ── SETTINGS VIEW ── -->
-      <div class="view" id="view-settings">
-        <div class="sec-hdr"><div><h2>SETTINGS & SETUP</h2><p>Configuration and Supabase setup guide</p></div></div>
-
-        <div class="settings-card">
-          <h3>🔑 HOW TO FIND YOUR SUPABASE URL & KEY</h3>
-          <p style="font-size:13px;color:var(--gray-400);line-height:1.8">
-            1. Go to <strong>supabase.com</strong> and log in<br>
-            2. Click on your project (e.g. <em>jmkautos</em>)<br>
-            3. In the left sidebar, click <strong>Project Settings</strong> (gear ⚙️ icon)<br>
-            4. Click <strong>API</strong> under the Configuration section<br>
-            5. You'll see:
-          </p>
-          <div class="code-block">Project URL:  https://abcdefghijkl.supabase.co   ← This is your SUPABASE_URL
-anon public:  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...   ← This is your SUPABASE_KEY</div>
-          <p style="font-size:13px;color:var(--gray-400);margin-top:16px">Then open this file (<code>admin/index.html</code>) and replace the two constants at the top of the &lt;script&gt; section.</p>
-        </div>
-
-        <div class="settings-card">
-          <h3>🗄️ DATABASE SQL — Run in Supabase SQL Editor</h3>
-          <p style="font-size:13px;color:var(--gray-400);margin-bottom:4px">Go to <strong>SQL Editor</strong> in your Supabase project and run this to add the extra columns:</p>
-          <div class="code-block">-- Add extra columns to your existing cars table
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS price bigint;
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS price_label text;
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS category text;
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS in_stock boolean default true;
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS torque text;
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS power_kw text;
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS dimensions text;
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS vin text;
-ALTER TABLE cars ADD COLUMN IF NOT EXISTS location text default 'Ikotun Egbe, Lagos';
-
--- Enable RLS on cars table (important for security)
-ALTER TABLE cars ENABLE ROW LEVEL SECURITY;
-
--- Allow public reads (needed for your public site)
-CREATE POLICY "Public can read available cars" ON cars
-  FOR SELECT USING (true);
-
--- Allow only authenticated users (admin) to insert/update/delete
-CREATE POLICY "Admin can do everything" ON cars
-  FOR ALL USING (auth.role() = 'authenticated');</div>
-        </div>
-
-        <div class="settings-card">
-          <h3>🪣 STORAGE BUCKET SETUP</h3>
-          <p style="font-size:13px;color:var(--gray-400);line-height:1.8">
-            1. In Supabase, go to <strong>Storage</strong> (left sidebar)<br>
-            2. Click <strong>New bucket</strong><br>
-            3. Name it exactly: <code>car-images</code><br>
-            4. Enable <strong>Public bucket</strong> toggle → Save<br>
-            5. Click the bucket → <strong>Policies</strong> tab → Add policy:<br>
-            &nbsp;&nbsp;&nbsp;• Allow authenticated users to upload (INSERT)<br>
-            &nbsp;&nbsp;&nbsp;• Allow public to view (SELECT)
-          </p>
-        </div>
-
-        <div class="settings-card">
-          <h3>👤 ADMIN USER SETUP</h3>
-          <p style="font-size:13px;color:var(--gray-400);line-height:1.8">
-            1. In Supabase, go to <strong>Authentication → Users</strong><br>
-            2. Click <strong>Invite user</strong> or <strong>Add user</strong><br>
-            3. Enter your email (e.g. <code>admin@jmkautos.com</code>) and a strong password<br>
-            4. Use those exact credentials to log in to this admin panel
-          </p>
-        </div>
-
-        <div class="settings-card">
-          <h3>⚙️ CURRENT CONFIG</h3>
-          <p style="font-size:13px;color:var(--gray-400);margin-bottom:10px">Status of your current Supabase configuration:</p>
-          <div id="configStatus" style="font-size:13px;padding:12px 16px;background:var(--dark-3);border-radius:var(--r-sm);font-family:monospace;color:#7DD3FC"></div>
-        </div>
-      </div>
+      
 
     </div><!-- /content -->
   </div><!-- /main -->
