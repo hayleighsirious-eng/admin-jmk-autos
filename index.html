@@ -137,7 +137,7 @@ tbody td{padding:10px 12px;font-size:13px;color:rgba(255,255,255,.85);vertical-a
 .car-title-cell strong{display:block;font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:160px}
 .car-title-cell span{font-size:11px;color:var(--gray-500)}
 
-/* ── MOBILE CARDS (replaces table on small screens) ── */
+/* ── MOBILE CARDS ── */
 .car-cards{display:none;flex-direction:column;gap:2px;background:rgba(255,255,255,.05)}
 .car-card{background:var(--dark-2);padding:16px;display:flex;align-items:center;gap:14px;-webkit-tap-highlight-color:transparent;border-bottom:1px solid rgba(255,255,255,.06)}
 .car-card:last-child{border-bottom:none}
@@ -223,6 +223,11 @@ select.form-input{appearance:none;cursor:pointer;background-image:url("data:imag
 .img-preview-item.primary-badge::after{content:'COVER';position:absolute;bottom:0;left:0;right:0;background:rgba(200,16,46,.85);font-size:8px;font-weight:700;letter-spacing:.5px;text-align:center;padding:2px;color:var(--white)}
 .upload-progress{height:3px;background:var(--dark-3);border-radius:3px;margin-top:8px;overflow:hidden;display:none}
 .upload-progress-bar{height:100%;background:var(--red);border-radius:3px;transition:width .3s;width:0}
+
+/* ── VEHICLE TYPE PILLS ── */
+.vtype-pill{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:100px;font-size:13px;font-weight:600;cursor:pointer;border:1.5px solid rgba(255,255,255,.12);background:var(--dark-3);color:rgba(255,255,255,.55);transition:all .2s;font-family:var(--font-b);min-height:38px}
+.vtype-pill:hover{border-color:rgba(255,255,255,.3);color:rgba(255,255,255,.85)}
+.vtype-pill.active{background:var(--red);border-color:var(--red);color:#fff}
 
 /* ── TOGGLES ── */
 .toggle-row{display:flex;flex-direction:column;gap:12px;margin-top:4px}
@@ -386,6 +391,19 @@ select.form-input{appearance:none;cursor:pointer;background-image:url("data:imag
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 8 12 12 14 14"/></svg>
         <span>Reserved</span>
       </div>
+      <div class="sb-section">By Type</div>
+      <div class="sb-item" onclick="filterByType('car');closeSidebar()" id="nav-type-car">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h14l4 4v4a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+        <span>Cars</span>
+      </div>
+      <div class="sb-item" onclick="filterByType('tricycle');closeSidebar()" id="nav-type-tricycle">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="6" r="2"/><path d="M6 16V10l6-4 6 4v6"/></svg>
+        <span>Keke / Tricycle</span>
+      </div>
+      <div class="sb-item" onclick="filterByType('truck');closeSidebar()" id="nav-type-truck">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <span>Trucks</span>
+      </div>
     </nav>
     <div class="sb-bottom">
       <div class="sb-user">
@@ -452,6 +470,7 @@ select.form-input{appearance:none;cursor:pointer;background-image:url("data:imag
           <div class="filter-selects">
             <select class="filter-select" id="filterStatus" onchange="applyFilters()"><option value="">All Status</option><option value="available">Available</option><option value="sold">Sold</option><option value="reserved">Reserved</option></select>
             <select class="filter-select" id="filterCategory" onchange="applyFilters()"><option value="">All Categories</option><option value="Foreign Used">Foreign Used</option><option value="Nigerian Used">Nigerian Used</option><option value="Brand New">Brand New</option><option value="Salvage / Tokunbo">Salvage</option></select>
+            <select class="filter-select" id="filterType" onchange="applyFilters()"><option value="">All Types</option><option value="car">Cars</option><option value="tricycle">Keke / Tricycle</option><option value="truck">Trucks</option></select>
             <select class="filter-select" id="filterBrand" onchange="applyFilters()"><option value="">All Brands</option></select>
             <button class="btn btn-ghost btn-sm" onclick="clearFilters()" style="flex-shrink:0">Clear</button>
           </div>
@@ -517,8 +536,30 @@ select.form-input{appearance:none;cursor:pointer;background-image:url("data:imag
       <div style="height:16px"></div>
       <div class="form-section-title">🚗 Basic Information</div>
       <div class="form-grid">
+        <!-- Vehicle Type Pills — FIRST field -->
+        <div class="form-group span-2">
+          <label>Vehicle Type <span>*</span></label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap" id="vehicleTypePills">
+            <button type="button" class="vtype-pill active" onclick="selectVType(this,'car')" data-type="car">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17H3a2 2 0 01-2-2V9a2 2 0 012-2h14l4 4v4a2 2 0 01-2 2h-2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>
+              Car
+            </button>
+            <button type="button" class="vtype-pill" onclick="selectVType(this,'tricycle')" data-type="tricycle">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><circle cx="12" cy="6" r="2"/><path d="M6 16V10l6-4 6 4v6"/></svg>
+              Keke / Tricycle
+            </button>
+            <button type="button" class="vtype-pill" onclick="selectVType(this,'truck')" data-type="truck">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="1"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              Truck
+            </button>
+          </div>
+          <input type="hidden" id="f_vehicle_type" value="car">
+        </div>
+
+        <!-- Listing Title -->
         <div class="form-group span-2"><label>Listing Title <span>*</span></label><input type="text" id="f_title" class="form-input" placeholder="e.g. Toyota Camry 2019 Sport Edition"></div>
-        <div class="form-group"><label>Brand / Make <span>*</span></label><input type="text" id="f_brand" class="form-input" placeholder="e.g. Toyota" list="brandList"><datalist id="brandList"><option>Toyota</option><option>Honda</option><option>Mercedes-Benz</option><option>BMW</option><option>Lexus</option><option>Ford</option><option>Hyundai</option><option>Kia</option><option>Chevrolet</option><option>Volkswagen</option><option>Nissan</option><option>Jeep</option><option>Land Rover</option><option>Porsche</option><option>Audi</option><option>Mazda</option><option>Mitsubishi</option><option>Infiniti</option><option>Acura</option><option>Cadillac</option></datalist></div>
+
+        <div class="form-group"><label>Brand / Make <span>*</span></label><input type="text" id="f_brand" class="form-input" placeholder="e.g. Toyota" list="brandList"><datalist id="brandList"><option>Toyota</option><option>Honda</option><option>Mercedes-Benz</option><option>BMW</option><option>Lexus</option><option>Ford</option><option>Hyundai</option><option>Kia</option><option>Chevrolet</option><option>Volkswagen</option><option>Nissan</option><option>Jeep</option><option>Land Rover</option><option>Porsche</option><option>Audi</option><option>Mazda</option><option>Mitsubishi</option><option>Infiniti</option><option>Acura</option><option>Cadillac</option><option>Bajaj</option><option>TVS</option><option>Piaggio</option><option>Qlink</option><option>Haojin</option><option>Mack</option><option>Volvo</option><option>Man Diesel</option><option>Isuzu</option><option>Hino</option><option>Sinotruk</option></datalist></div>
         <div class="form-group"><label>Model</label><input type="text" id="f_model" class="form-input" placeholder="e.g. Camry"></div>
         <div class="form-group"><label>Year <span>*</span></label><input type="number" id="f_year" class="form-input" placeholder="e.g. 2021" min="1990" max="2026" inputmode="numeric"></div>
         <div class="form-group"><label>Mileage (km)</label><input type="number" id="f_mileage" class="form-input" placeholder="e.g. 45000" inputmode="numeric"></div>
@@ -528,7 +569,7 @@ select.form-input{appearance:none;cursor:pointer;background-image:url("data:imag
       <div class="form-grid">
         <div class="form-group"><label>Category <span>*</span></label><select id="f_category" class="form-input"><option value="">Select category</option><option value="Foreign Used">Foreign Used (Tokunbo)</option><option value="Nigerian Used">Nigerian Used</option><option value="Brand New">Brand New</option><option value="Salvage / Tokunbo">Salvage / Tokunbo</option></select></div>
         <div class="form-group"><label>Condition</label><select id="f_condition" class="form-input"><option value="">Select condition</option><option value="Foreign Used">Foreign Used</option><option value="Nigerian Used">Nigerian Used</option><option value="Brand New">Brand New</option><option value="Excellent">Excellent</option><option value="Good">Good</option><option value="Fair">Fair</option></select></div>
-        <div class="form-group"><label>Body Type</label><select id="f_body_type" class="form-input"><option value="">Select type</option><option>SUV</option><option>Sedan</option><option>Truck / Pickup</option><option>Van / Minivan</option><option>Hatchback</option><option>Coupe</option><option>Wagon</option><option>Convertible</option><option>Crossover</option></select></div>
+        <div class="form-group"><label>Body Type</label><select id="f_body_type" class="form-input"><option value="">Select type</option><option>SUV</option><option value="keke/Tricycle">keke/Tricycle</option><option value="Truck">Truck</option><option>Sedan</option><option>Truck / Pickup</option><option>Van / Minivan</option><option>Hatchback</option><option>Coupe</option><option>Wagon</option><option>Convertible</option><option>Crossover</option></select></div>
         <div class="form-group"><label>Status</label><select id="f_status" class="form-input"><option value="available">Available</option><option value="reserved">Reserved</option><option value="sold">Sold</option></select></div>
         <div class="form-group"><label>Location</label><input type="text" id="f_location" class="form-input" value="Ikotun Egbe, Lagos"></div>
         <div class="form-group"><label>VIN / Chassis No.</label><input type="text" id="f_vin" class="form-input" placeholder="Optional"></div>
@@ -597,6 +638,14 @@ let currentPage=1, editingCarId=null;
 const PAGE_SIZE=15;
 let pendingImages=[], existingImages=[], formState={featured:false,in_stock:true};
 let activeStatusFilter='';
+let activeTypeFilter='';
+
+/* ── VEHICLE TYPE PILLS ── */
+function selectVType(el, type) {
+  document.querySelectorAll('.vtype-pill').forEach(p => p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('f_vehicle_type').value = type;
+}
 
 /* ── SIDEBAR ── */
 function toggleSidebar(){
@@ -670,9 +719,15 @@ function showView(name){
   if(name==='dashboard')loadDashboard();
   if(name==='cars')loadCars();
 }
+
 function filterByStatus(status){
   activeStatusFilter=status;
   document.getElementById('filterStatus').value=status;
+  showView('cars');
+}
+
+function filterByType(type){
+  activeTypeFilter=type;
   showView('cars');
 }
 
@@ -717,6 +772,7 @@ async function loadCars(){
   const brands=[...new Set(allCars.map(c=>c.brand).filter(Boolean))].sort();
   document.getElementById('filterBrand').innerHTML='<option value="">All Brands</option>'+brands.map(b=>`<option>${b}</option>`).join('');
   if(activeStatusFilter){document.getElementById('filterStatus').value=activeStatusFilter;activeStatusFilter='';}
+  if(activeTypeFilter){document.getElementById('filterType').value=activeTypeFilter;activeTypeFilter='';}
   applyFilters();
 }
 
@@ -724,10 +780,12 @@ function applyFilters(){
   const q=(document.getElementById('searchInput')?.value||'').toLowerCase();
   const stat=document.getElementById('filterStatus')?.value||'';
   const cat=document.getElementById('filterCategory')?.value||'';
+  const type=document.getElementById('filterType')?.value||'';
   const br=document.getElementById('filterBrand')?.value||'';
   filteredCars=allCars.filter(c=>{
     if(stat&&c.status!==stat)return false;
     if(cat&&c.category!==cat&&c.condition!==cat)return false;
+    if(type&&(c.vehicle_type||'car')!==type)return false;
     if(br&&c.brand!==br)return false;
     if(q&&![c.title,c.brand,c.year,c.body_type,c.color,c.condition].join(' ').toLowerCase().includes(q))return false;
     return true;
@@ -738,7 +796,7 @@ function applyFilters(){
 }
 
 function clearFilters(){
-  ['searchInput','filterStatus','filterCategory','filterBrand'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['searchInput','filterStatus','filterCategory','filterType','filterBrand'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   applyFilters();
 }
 
@@ -818,6 +876,7 @@ function openAddCar(){
   document.getElementById('carModal').classList.add('open');
   document.body.style.overflow='hidden';
 }
+
 async function openEditCar(id){
   editingCarId=id;resetForm();
   document.getElementById('modalTitle').textContent='EDIT CAR';
@@ -831,6 +890,13 @@ async function openEditCar(id){
     const el=document.getElementById('f_'+f);
     if(el&&car[f]!=null)el.value=car[f];
   });
+  // Set vehicle type pill
+  const vtype = car.vehicle_type || 'car';
+  document.getElementById('f_vehicle_type').value = vtype;
+  document.querySelectorAll('.vtype-pill').forEach(p => p.classList.remove('active'));
+  const vtypePill = document.querySelector(`.vtype-pill[data-type="${vtype}"]`);
+  if(vtypePill) vtypePill.classList.add('active');
+
   formState.featured=!!car.featured;
   formState.in_stock=car.in_stock!==false;
   syncToggles();
@@ -839,10 +905,12 @@ async function openEditCar(id){
   document.getElementById('carModal').classList.add('open');
   document.body.style.overflow='hidden';
 }
+
 function closeCarModal(){
   document.getElementById('carModal').classList.remove('open');
   document.body.style.overflow='';
 }
+
 function resetForm(){
   ['title','brand','model','year','mileage','category','condition','body_type','status',
    'fuel_type','transmission','drive_mode','engine','color','description','price',
@@ -850,6 +918,12 @@ function resetForm(){
     const el=document.getElementById('f_'+f);
     if(el)el.value=f==='location'?'Ikotun Egbe, Lagos':f==='status'?'available':'';
   });
+  // Reset vehicle type to 'car'
+  document.getElementById('f_vehicle_type').value = 'car';
+  document.querySelectorAll('.vtype-pill').forEach(p => p.classList.remove('active'));
+  const carPill = document.querySelector('.vtype-pill[data-type="car"]');
+  if(carPill) carPill.classList.add('active');
+
   formState={featured:false,in_stock:true};
   syncToggles();
   pendingImages=[];existingImages=[];
@@ -857,6 +931,7 @@ function resetForm(){
   document.getElementById('saveCarBtn').innerHTML=`<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> Save Car`;
   document.getElementById('saveCarBtn').disabled=false;
 }
+
 function toggleField(f){formState[f]=!formState[f];syncToggles();}
 function syncToggles(){
   document.getElementById('toggle_featured').classList.toggle('on',formState.featured);
@@ -914,6 +989,7 @@ async function saveCar(){
   const g=id=>document.getElementById(id)?.value;
   const payload={
     title,brand,images,
+    vehicle_type: document.getElementById('f_vehicle_type').value || 'car',
     model:g('f_model')||null,year:g('f_year')?parseInt(g('f_year')):null,
     mileage:g('f_mileage')?parseInt(g('f_mileage')):null,
     category:g('f_category')||null,condition:g('f_condition')||null,
